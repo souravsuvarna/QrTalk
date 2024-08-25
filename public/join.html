@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QR Code Chat - Second Device</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script
+      src="https://unpkg.com/html5-qrcode"
+      type="text/javascript"
+    ></script>
+  </head>
+  <body>
+    <h1>Scan the QR Code from the first device</h1>
+    <div id="reader" style="width: 300px"></div>
+    <div id="chat"></div>
+    <input type="text" id="messageInput" placeholder="Type your message here" />
+    <button id="sendBtn">Send</button>
+
+    <script>
+      let sessionId = "";
+      let socket = null;
+
+      // Function to handle QR code scanning
+      function onScanSuccess(qrCodeMessage) {
+        const url = new URL(qrCodeMessage);
+        const sessionId = url.searchParams.get("sessionId");
+
+        // Connect to the server with the session ID
+        socket = io({ query: { sessionId } });
+        socket.connect();
+
+        // Stop scanning after successful scan
+        html5QrcodeScanner.clear();
+
+        // Handle incoming messages
+        socket.on("start", (message) => {
+          document.getElementById("chat").innerHTML += `<p>${message}</p>`;
+        });
+
+        socket.on("message", (message) => {
+          document.getElementById("chat").innerHTML += `<p>${message}</p>`;
+        });
+
+        socket.on("error", (message) => {
+          alert("Invalid Id");
+          setTimeout(() => {
+            window.location.href = "/";
+          }, 0);
+        });
+      }
+
+      var html5QrcodeScanner = new Html5QrcodeScanner("reader", {
+        fps: 10,
+        qrbox: 250,
+      });
+      html5QrcodeScanner.render(onScanSuccess);
+
+      // Send message to the server
+      document.getElementById("sendBtn").addEventListener("click", () => {
+        const message = document.getElementById("messageInput").value;
+        socket.emit("message", message);
+        document.getElementById("messageInput").value = "";
+      });
+    </script>
+  </body>
+</html>

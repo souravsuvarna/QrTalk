@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css"
+    />
+    <style>
+      .footer {
+        padding: 1rem 2rem;
+      }
+      .progress {
+        border-radius: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- <a href="/host">Host</a>
+    <a href="/join">Join</a> -->
+
+    <!-- Nav Bar -->
+    <nav class="navbar is-transparent is-link">
+      <div class="navbar-brand">
+        <a class="navbar-item">
+          <h1>QRCast</h1>
+        </a>
+        <div
+          class="navbar-burger js-burger"
+          data-target="navbarExampleTransparentExample"
+        >
+          <span style="color: white"></span>
+          <span style="color: white"></span>
+          <span style="color: white"></span>
+          <span style="color: white"></span>
+        </div>
+      </div>
+
+      <div id="navbarExampleTransparentExample" class="navbar-menu">
+        <div class="navbar-end">
+          <div class="navbar-item">
+            <a class="navbar-item" href="#about">
+              <span>About</span>
+            </a>
+            <div class="field is-grouped">
+              <p class="control">
+                <a
+                  href="https://github.com/souravsuvarna"
+                  class="button is-info is-outlined"
+                >
+                  <span>GitHub</span>
+                  <span class="icon">
+                    <i class="fab fa-github"></i>
+                  </span>
+                </a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+
+    <!-- Section -->
+    <section class="section" style="background-color:#4258FF;">
+        <h1 class="title">QR Cast</h1>
+      <div class="columns" style="margin: 50px;">
+        <div class="column">
+          <div class="box" style=" height: 170px; background-color: aliceblue;">
+            <div class="has-text-centered">
+                <h1 class="title" style="margin-top: 50px;"><a href="/host" style=" color: inherit;">Host</a></h1>
+            </div>
+          </div>
+        </div>
+        <div class="column">
+          <div class="box"  style=" height: 170px; background-color: aliceblue">
+            <div class="has-text-centered">
+                <h1 class="title" style="margin-top: 50px;"><a href="/join" style=" color: inherit;">Join</a></h1>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer" style="background-color: #1e1e1e">
+      <div class="content has-text-centered">
+        <span style="color: white">&copy;QrCast 2024</span><br />
+        <span style="color: white; opacity: 0.5; font-size: 0.8rem"
+          >All rights reserved.</span
+        >
+      </div>
+    </footer>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        // Get all "navbar-burger" elements
+        const $navbarBurgers = Array.prototype.slice.call(
+          document.querySelectorAll(".navbar-burger"),
+          0
+        );
+
+        // Add a click event on each of them
+        $navbarBurgers.forEach((el) => {
+          el.addEventListener("click", () => {
+            // Get the target from the "data-target" attribute
+            const target = el.dataset.target;
+            const $target = document.getElementById(target);
+
+            // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
+            el.classList.toggle("is-active");
+            $target.classList.toggle("is-active");
+          });
+        });
+      });
+    </script>
+  </body>
+</html>

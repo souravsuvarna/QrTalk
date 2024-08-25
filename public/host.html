@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Socket.IO Chat</title>
+  </head>
+  <body>
+    <input id="message" type="text" placeholder="Type a message" disabled />
+    <button id="send" disabled>Send</button>
+    <div id="chat"></div>
+    <div id="qrcode"></div>
+
+    <!-- Include necessary scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+
+    <script>
+      let sessionId = "";
+      let socket = null;
+
+      // Function to generate the QR code
+      function generateQRCode() {
+        new QRCode(document.getElementById("qrcode"), {
+          text: `https://9013-103-89-235-75.ngrok-free.app/join?sessionId=${sessionId}`,
+          width: 128,
+          height: 128,
+        });
+        console.log(`https://9013-103-89-235-75.ngrok-free.app/join-session?sessionId=${sessionId}`);
+      }
+
+      // Function to initialize the chat session
+      function initializeChat() {
+        fetch("/create-session")
+          .then((response) => response.json())
+          .then((data) => {
+            sessionId = data.sessionId;
+            generateQRCode(); // Generate QR code with session ID
+            setupSocketConnection(sessionId); // Setup WebSocket connection
+          })
+          .catch((error) => console.error("Error fetching session ID:", error));
+      }
+
+      // Function to setup the WebSocket connection
+      function setupSocketConnection(sessionId) {
+        if (socket) {
+          socket.disconnect(); // Disconnect existing socket if any
+        }
+
+        socket = io({ query: { sessionId } });
+
+        socket.on("connect", () => {
+          console.log("Connected to server");
+          document.getElementById("message").disabled = false;
+          document.getElementById("send").disabled = false;
+        });
+
+        socket.on("secondDeviceJoined", () => {
+          console.log("Received secondDeviceJoined event");
+          document.getElementById("qrcode").innerHTML = ""; // Clear the QR code
+        });
+
+        socket.on("message", (message) => {
+          const chat = document.getElementById("chat");
+          chat.innerHTML += `<div>${message}</div>`;
+        });
+
+        socket.on("disconnect", () => {
+          document.getElementById("message").disabled = true;
+          document.getElementById("send").disabled = true;
+          document.getElementById("chat").innerHTML = "";
+        });
+      }
+
+      // Function to send a message
+      document.getElementById("send").onclick = () => {
+        const message = document.getElementById("message").value;
+        if (socket && socket.connected) {
+          socket.send(message);
+          document.getElementById("chat").innerHTML += `<div>${message}</div>`;
+          document.getElementById("message").value = "";
+        } else {
+          alert("Please start the chat first.");
+        }
+      };
+
+
+      function middleWare(){
+        document.getElementById("qrcode").innerHTML = "";
+        initializeChat();
+      }
+
+      middleWare();
+      setInterval(middleWare,60000);
+    </script>
+  </body>
+</html>
