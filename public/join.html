@@ -15,6 +15,7 @@
     <h1>Scan the QR Code from the first device</h1>
     <div id="reader" style="width: 300px"></div>
     <div id="chat"></div>
+    <p id="host" hidden>Host Disconnected</p>
     <input type="text" id="messageInput" placeholder="Type your message here" />
     <button id="sendBtn">Send</button>
 
@@ -34,20 +35,27 @@
         // Stop scanning after successful scan
         html5QrcodeScanner.clear();
 
-        // Handle incoming messages
-        socket.on("start", (message) => {
-          document.getElementById("chat").innerHTML += `<p>${message}</p>`;
-        });
+        socket.on("connect", () => {
+          // Handle incoming messages
+          socket.on("start", (message) => {
+            document.getElementById("chat").innerHTML += `<p>${message}</p>`;
+          });
 
-        socket.on("message", (message) => {
-          document.getElementById("chat").innerHTML += `<p>${message}</p>`;
-        });
+          socket.on("message", (message) => {
+            document.getElementById("chat").innerHTML += `<p>${message}</p>`;
+          });
 
-        socket.on("error", (message) => {
-          alert("Invalid Id");
-          setTimeout(() => {
-            window.location.href = "/";
-          }, 0);
+          socket.on("notify-host-disconnect", (message) => {
+            document.getElementById("host").hidden = false;
+            document.getElementById("sendBtn").disabled = true;
+          });
+
+          socket.on("error", (message) => {
+            alert("Invalid Id");
+            setTimeout(() => {
+              window.location.href = "/";
+            }, 0);
+          });
         });
       }
 

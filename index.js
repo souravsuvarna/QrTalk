@@ -87,6 +87,10 @@ io.on("connection", (socket) => {
       delete sessions[sessionId];
     }
   });
+
+  socket.on("host-disconnect",(message)=>{
+    socket.broadcast.emit("notify-host-disconnect", message);
+  });
 });
 
 server.listen(8000, () => {

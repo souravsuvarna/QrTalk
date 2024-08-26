@@ -4,10 +4,26 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Socket.IO Chat</title>
+    <style>
+      .hidden {
+        display: none;
+      }
+      .display {
+        display: inline;
+      }
+    </style>
   </head>
   <body>
-    <input id="message" type="text" placeholder="Type a message" disabled />
-    <button id="send" disabled>Send</button>
+    <input
+      id="message"
+      class="messageTools"
+      type="text"
+      placeholder="Type a message"
+      disabled
+    />
+    <button id="send" class="messageTools" disabled>Send</button>
+    <button id="disconnect" class="messageTools">Disconnect</button>
+
     <div id="chat"></div>
     <div id="qrcode"></div>
 
@@ -19,14 +35,31 @@
       let sessionId = "";
       let socket = null;
 
+      function hiddenMsgToolsElements() {
+        let elements = document.getElementsByClassName("messageTools");
+        for (let i = 0; i < elements.length; i++) {
+          elements[i].classList.add("hidden");
+        }
+      }
+
+      hiddenMsgToolsElements();
+
+      function displayMsgToolsElements() {
+        let elements = document.getElementsByClassName("messageTools");
+        for (let i = 0; i < elements.length; i++) {
+          elements[i].classList.add("display");
+        }
+      }
       // Function to generate the QR code
       function generateQRCode() {
         new QRCode(document.getElementById("qrcode"), {
-          text: `https://9013-103-89-235-75.ngrok-free.app/join?sessionId=${sessionId}`,
+          text: `https://8a3c-103-89-235-75.ngrok-free.app/join?sessionId=${sessionId}`,
           width: 128,
           height: 128,
         });
-        console.log(`https://9013-103-89-235-75.ngrok-free.app/join-session?sessionId=${sessionId}`);
+        console.log(
+          `https://8a3c-103-89-235-75.ngrok-free.app/join-session?sessionId=${sessionId}`
+        );
       }
 
       // Function to initialize the chat session
@@ -58,6 +91,7 @@
         socket.on("secondDeviceJoined", () => {
           console.log("Received secondDeviceJoined event");
           document.getElementById("qrcode").innerHTML = ""; // Clear the QR code
+          displayMsgToolsElements();
         });
 
         socket.on("message", (message) => {
@@ -84,14 +118,21 @@
         }
       };
 
+      document.getElementById("disconnect").onclick = () => {
+        alert("Disconnected");
+        socket.emit("host-disconnect", "Host Disconnected");
+        setTimeout(() => {
+          socket.disconnect();
+          window.location.href = "/";
+        }, 100);
+      };
 
-      function middleWare(){
+      function middleWare() {
         document.getElementById("qrcode").innerHTML = "";
         initializeChat();
       }
 
       middleWare();
-      setInterval(middleWare,60000);
     </script>
   </body>
 </html>
