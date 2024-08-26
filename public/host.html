@@ -4,6 +4,14 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Socket.IO Chat</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css"
+    />
     <style>
       .hidden {
         display: none;
@@ -11,128 +19,207 @@
       .display {
         display: inline;
       }
+      .footer {
+        padding: 1rem 2rem;
+      }
+      .progress {
+        border-radius: 20px;
+      }
     </style>
   </head>
   <body>
-    <input
-      id="message"
-      class="messageTools"
-      type="text"
-      placeholder="Type a message"
-      disabled
-    />
-    <button id="send" class="messageTools" disabled>Send</button>
-    <button id="disconnect" class="messageTools">Disconnect</button>
+    <!-- Nav Bar -->
+    <nav class="navbar is-transparent is-link">
+      <div class="navbar-brand">
+        <a class="navbar-item">
+          <h1>QRCast</h1>
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M20 6H4V8H2V6C2 4.89543 2.89543 4 4 4H20C21.1046 4 22 4.89543 22 6V18C22 19.1046 21.1046 20 20 20H15V18H20V6Z"
+              fill="currentColor"
+            />
+            <path
+              d="M2 13C5.86599 13 9 16.134 9 20H7C7 17.2386 4.76142 15 2 15V13Z"
+              fill="currentColor"
+            />
+            <path
+              d="M2 17C3.65685 17 5 18.3431 5 20H2V17Z"
+              fill="currentColor"
+            />
+            <path
+              d="M2 9C8.07513 9 13 13.9249 13 20H11C11 15.0294 6.97056 11 2 11V9Z"
+              fill="currentColor"
+            />
+          </svg>
+        </a>
+      </div>
+    </nav>
 
-    <div id="chat"></div>
-    <div id="qrcode"></div>
+    <section class="section" style="background-color: #4258ff">
+      <input
+        id="message"
+        class="messageTools"
+        type="text"
+        placeholder="Type a message"
+        hidden
+      />
+      <button id="send" class="messageTools" hidden>Send</button>
+      <button id="disconnect" class="messageTools" hidden>Disconnect</button>
+      <div id="chat"></div>
 
-    <!-- Include necessary scripts -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <script src="/socket.io/socket.io.js"></script>
+      <div class="columns">
+        <div class="column"></div>
+        <div class="column is-one-third">
+          <div
+            class="box"
+            id="box"
+            style="
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              height: 350px;
+            "
+          >
+            <div id="qrcode" class="has-text-centered"></div>
+          </div>
+          <span
+            style="
+              text-align: center;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              color: aliceblue;
+            "
+            >Scan Me</span
+          >
+        </div>
+        <div class="column"></div>
+      </div>
+    </section>
 
-    <script>
-      let sessionId = "";
-      let socket = null;
-
-      function hiddenMsgToolsElements() {
-        let elements = document.getElementsByClassName("messageTools");
-        for (let i = 0; i < elements.length; i++) {
-          elements[i].classList.add("hidden");
-        }
-      }
-
-      hiddenMsgToolsElements();
-
-      function displayMsgToolsElements() {
-        let elements = document.getElementsByClassName("messageTools");
-        for (let i = 0; i < elements.length; i++) {
-          elements[i].classList.add("display");
-        }
-      }
-      // Function to generate the QR code
-      function generateQRCode() {
-        new QRCode(document.getElementById("qrcode"), {
-          text: `https://8a3c-103-89-235-75.ngrok-free.app/join?sessionId=${sessionId}`,
-          width: 128,
-          height: 128,
-        });
-        console.log(
-          `https://8a3c-103-89-235-75.ngrok-free.app/join-session?sessionId=${sessionId}`
-        );
-      }
-
-      // Function to initialize the chat session
-      function initializeChat() {
-        fetch("/create-session")
-          .then((response) => response.json())
-          .then((data) => {
-            sessionId = data.sessionId;
-            generateQRCode(); // Generate QR code with session ID
-            setupSocketConnection(sessionId); // Setup WebSocket connection
-          })
-          .catch((error) => console.error("Error fetching session ID:", error));
-      }
-
-      // Function to setup the WebSocket connection
-      function setupSocketConnection(sessionId) {
-        if (socket) {
-          socket.disconnect(); // Disconnect existing socket if any
-        }
-
-        socket = io({ query: { sessionId } });
-
-        socket.on("connect", () => {
-          console.log("Connected to server");
-          document.getElementById("message").disabled = false;
-          document.getElementById("send").disabled = false;
-        });
-
-        socket.on("secondDeviceJoined", () => {
-          console.log("Received secondDeviceJoined event");
-          document.getElementById("qrcode").innerHTML = ""; // Clear the QR code
-          displayMsgToolsElements();
-        });
-
-        socket.on("message", (message) => {
-          const chat = document.getElementById("chat");
-          chat.innerHTML += `<div>${message}</div>`;
-        });
-
-        socket.on("disconnect", () => {
-          document.getElementById("message").disabled = true;
-          document.getElementById("send").disabled = true;
-          document.getElementById("chat").innerHTML = "";
-        });
-      }
-
-      // Function to send a message
-      document.getElementById("send").onclick = () => {
-        const message = document.getElementById("message").value;
-        if (socket && socket.connected) {
-          socket.send(message);
-          document.getElementById("chat").innerHTML += `<div>${message}</div>`;
-          document.getElementById("message").value = "";
-        } else {
-          alert("Please start the chat first.");
-        }
-      };
-
-      document.getElementById("disconnect").onclick = () => {
-        alert("Disconnected");
-        socket.emit("host-disconnect", "Host Disconnected");
-        setTimeout(() => {
-          socket.disconnect();
-          window.location.href = "/";
-        }, 100);
-      };
-
-      function middleWare() {
-        document.getElementById("qrcode").innerHTML = "";
-        initializeChat();
-      }
-
-      middleWare();
-    </script>
+    <!-- Footer -->
+    <footer class="footer" style="background-color: #1e1e1e">
+      <div class="content has-text-centered">
+        <span style="color: white">&copy;QrCast 2024</span><br />
+        <span style="color: white; opacity: 0.5; font-size: 0.8rem"
+          >All rights reserved.</span
+        >
+      </div>
+    </footer>
   </body>
+  <!-- Include necessary scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+
+  <script>
+    let sessionId = "";
+    let socket = null;
+
+    function hiddenMsgToolsElements() {
+      let elements = document.getElementsByClassName("messageTools");
+      for (let i = 0; i < elements.length; i++) {
+        elements[i].classList.add("hidden");
+      }
+    }
+
+    hiddenMsgToolsElements();
+
+    function displayMsgToolsElements() {
+      let elements = document.getElementsByClassName("messageTools");
+      for (let i = 0; i < elements.length; i++) {
+        elements[i].classList.add("display");
+      }
+    }
+    // Function to generate the QR code
+    function generateQRCode() {
+      new QRCode(document.getElementById("qrcode"), {
+        text: `https://8a3c-103-89-235-75.ngrok-free.app/join?sessionId=${sessionId}`,
+        width: 250,
+        height: 250,
+      });
+      console.log(
+        `https://8a3c-103-89-235-75.ngrok-free.app/join-session?sessionId=${sessionId}`
+      );
+    }
+
+    // Function to initialize the chat session
+    function initializeChat() {
+      fetch("/create-session")
+        .then((response) => response.json())
+        .then((data) => {
+          sessionId = data.sessionId;
+          generateQRCode(); // Generate QR code with session ID
+          setupSocketConnection(sessionId); // Setup WebSocket connection
+        })
+        .catch((error) => console.error("Error fetching session ID:", error));
+    }
+
+    // Function to setup the WebSocket connection
+    function setupSocketConnection(sessionId) {
+      if (socket) {
+        socket.disconnect(); // Disconnect existing socket if any
+      }
+
+      socket = io({ query: { sessionId } });
+
+      socket.on("connect", () => {
+        console.log("Connected to server");
+        document.getElementById("message").disabled = false;
+        document.getElementById("send").disabled = false;
+      });
+
+      socket.on("secondDeviceJoined", () => {
+        console.log("Received secondDeviceJoined event");
+        document.getElementById("qrcode").innerHTML = ""; // Clear the QR code
+        document.getElementById("qrcode").style.display = 'none';
+        document.getElementById("box").style.display = 'none';
+        displayMsgToolsElements();
+      });
+
+      socket.on("message", (message) => {
+        const chat = document.getElementById("chat");
+        chat.innerHTML += `<div>${message}</div>`;
+      });
+
+      socket.on("disconnect", () => {
+        document.getElementById("message").disabled = true;
+        document.getElementById("send").disabled = true;
+        document.getElementById("chat").innerHTML = "";
+      });
+    }
+
+    // Function to send a message
+    document.getElementById("send").onclick = () => {
+      const message = document.getElementById("message").value;
+      if (socket && socket.connected) {
+        socket.send(message);
+        document.getElementById("chat").innerHTML += `<div>${message}</div>`;
+        document.getElementById("message").value = "";
+      } else {
+        alert("Please start the chat first.");
+      }
+    };
+
+    document.getElementById("disconnect").onclick = () => {
+      alert("Disconnected");
+      socket.emit("host-disconnect", "Host Disconnected");
+      setTimeout(() => {
+        socket.disconnect();
+        window.location.href = "/";
+      }, 100);
+    };
+
+    function middleWare() {
+      document.getElementById("qrcode").innerHTML = "";
+      initializeChat();
+    }
+
+    middleWare();
+  </script>
 </html>
