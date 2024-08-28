@@ -1,2 +1,4 @@
 node_modules/
 .env
+public/chat.html
+public/test.html
