@@ -26,6 +26,11 @@
         border-radius: 20px;
       }
 
+      .navbar-item:hover {
+        background-color: #4258ff !important; /* Change the background color on hover */
+        color: #000000 !important; /* Change the text color on hover */
+      }
+      
       :root {
         --body-bg: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
         --msger-bg: #fff;
@@ -89,8 +94,8 @@
         margin: 0;
       }
       .msg-img {
-        width: 50px;
-        height: 50px;
+        width: 25px;
+        height: 25px;
         margin-right: 10px;
         background: #ddd;
         background-repeat: no-repeat;
@@ -99,9 +104,9 @@
         border-radius: 50%;
       }
       .msg-bubble {
-        max-width: 450px;
-        padding: 15px;
-        border-radius: 15px;
+        max-width: 200px;
+        padding: 10px;
+        border-radius: 10px;
         background: var(--left-msg-bg);
       }
       .msg-info {
@@ -112,10 +117,12 @@
       }
       .msg-info-name {
         margin-right: 10px;
+        font-size: small;
+        font-style: italic;
         font-weight: bold;
       }
       .msg-info-time {
-        font-size: 0.85em;
+        font-size: 0.50em;
       }
 
       .left-msg .msg-bubble {
@@ -188,7 +195,7 @@
       }
 
       .msg-body-class{
-        height: 70vh;
+        height: 100vh;
       }
     </style>
   </head>
@@ -227,9 +234,10 @@
     </nav>
 
     <!-- QR Code -->
+    
     <section
       id="hide-qr-section"
-      class="section"
+      class="section msg-body-class"
       style="background-color: #4258ff"
     >
       <div class="columns">
