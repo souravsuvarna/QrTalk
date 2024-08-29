@@ -33,7 +33,6 @@
         --left-msg-bg: #ececec;
         --right-msg-bg: #579ffb;
       }
-      
 
       .msger {
         display: flex;
@@ -41,7 +40,7 @@
         justify-content: space-between;
         width: 90vw; /* Responsive width */
         max-width: 867px;
-        height: auto; /* Adjust height */
+        height: calc(100%);
         border: var(--border);
         border-radius: 5px;
         background: var(--msger-bg);
@@ -187,6 +186,10 @@
         line-height: 30px;
         font-size: smaller;
       }
+
+      .msg-body-class{
+        height: 70vh;
+      }
     </style>
   </head>
   <body>
@@ -276,58 +279,58 @@
 
     <!-- Message Body -->
 
-    <section
-      class="section is-flex is-align-items-center is-justify-content-center"
-      style="background-color: #4258ff"
-      id="msg-body"
-    >
-      <div
-        class="container"
-        id="msg-div"
-        style="
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          height: 350px;
-        "
+    <div class="msg-body-class" id ="msg-div" style="display: none;">
+      <section
+        class="section is-flex is-align-items-center is-justify-content-center msg-body-class"
+        style="background-color: #4258ff"
+        id="msg-body"
       >
-        <div class="msger messageTools">
-          <header class="msger-header">
-            <div class="msger-header-title">Simple Chat</div>
-          </header>
+        <div
+          class="container"
+          style="
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 350px;
+          "
+        >
+          <div class="msger messageTools">
+            <header class="msger-header">
+              <div class="msger-header-title">Simple Chat</div>
+            </header>
 
-          <main
-            class="msger-chat"
-            style="height: 100%; overflow-y: auto;"
-          >
-            <p
-              style="
-                text-align: center;
-                opacity: 0.8;
-                font-family: Verdana, Geneva, Tahoma, sans-serif;
-                font-size: smaller;
-                font-style: italic;
-              "
-            >
-              Our privacy policy basically translates to don’t stress, we’re too
-              busy to watch you.
-            </p>
-          </main>
+            <main class="msger-chat" style="height: 100%; overflow-y: auto">
+              <p
+                style="
+                  text-align: center;
+                  opacity: 0.8;
+                  font-family: Verdana, Geneva, Tahoma, sans-serif;
+                  font-size: smaller;
+                  font-style: italic;
+                "
+              >
+              🔒 Our privacy policy basically translates to don’t stress, we’re
+                too busy to watch you.
+              </p>
+            </main>
 
-          <form id="msger-form" class="msger-inputarea">
-            <input
-              type="text"
-              class="msger-input"
-              placeholder="Enter your message..."
-            />
-            <button id="send" type="submit" class="msger-send-btn">Send</button>
-            <button id="disconnect" class="msger-disconnect-btn">
-              Disconnect
-            </button>
-          </form>
+            <form id="msger-form" class="msger-inputarea">
+              <input
+                type="text"
+                class="msger-input"
+                placeholder="Enter your message..."
+              />
+              <button id="send" type="submit" class="msger-send-btn">
+                Send
+              </button>
+              <button id="disconnect" class="msger-disconnect-btn">
+                Disconnect
+              </button>
+            </form>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
 
     <!-- Footer -->
     <footer class="footer" style="background-color: #1e1e1e">
@@ -369,7 +372,7 @@
     // Function to generate the QR code
     function generateQRCode() {
       new QRCode(document.getElementById("qrcode"), {
-        text: `https://4dda-103-89-235-75.ngrok-free.app/join?sessionId=${sessionId}`,
+        text: `https://6c3b-103-89-235-75.ngrok-free.app/join?sessionId=${sessionId}`,
         width: 250,
         height: 250,
       });
@@ -406,7 +409,7 @@
         document.getElementById("box-qr").style.display = "none";
         document.getElementById("container-in").style.display = "none";
         document.getElementById("hide-qr-section").style.display = "none";
-        document.getElementById("msg-div").style.display = "flex";
+        document.getElementById("msg-div").style.display = "block";
         displayMsgToolsElements();
       });
 
