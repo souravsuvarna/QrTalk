@@ -86,10 +86,15 @@ io.on("connection", (socket) => {
     if (session.clients.length === 0) {
       delete sessions[sessionId];
     }
+    console.log("Disconnection Succesful");
   });
 
   socket.on("host-disconnect",(message)=>{
     socket.broadcast.emit("notify-host-disconnect", message);
+  });
+
+  socket.on("client-disconnect",(message)=>{
+    socket.broadcast.emit("notify-client-disconnect", message);
   });
 });
 
