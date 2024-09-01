@@ -3,6 +3,8 @@
 
 QrTalk is a socket-based chat app that lets you connect and chat instantly by scanning a QR code. No accounts, no hassle—just simple, secure communication.
 
+Check out QrTalk: [QrTalk](https://qrtalk.onrender.com/)
+
 ## 🛠 Technologies
 ![Bulma](https://img.shields.io/badge/bulma-00D0B1?style=for-the-badge&logo=bulma&logoColor=white)
 
