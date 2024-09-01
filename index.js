@@ -29,6 +29,10 @@ app.get("/create-session", (req, res) => {
   res.json({ sessionId });
 });
 
+app.get('/ping', (req, res) => {
+  res.status(200).send('pong');
+});
+
 io.on("connection", (socket) => {
   const { sessionId, device } = socket.handshake.query;
 
