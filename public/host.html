@@ -254,7 +254,9 @@
           <span class="nav-item-hover"
             ><div class="info-button">
               <div class="info-tooltip">
-                <span style="font-size: smaller;">Trouble connecting? Refresh the QR code.</span>
+                <span style="font-size: smaller"
+                  >Trouble connecting? Refresh the QR code.</span
+                >
               </div>
               <i class="fa-solid fa-circle-info"></i></div
           ></span>
@@ -408,8 +410,10 @@
     }
     // Function to generate the QR code
     function generateQRCode() {
+      const qrLink = `${baseUrl}/join?sessionId=${sessionId}`;
+      console.log("QR Code Link:", qrLink); // Log the text
       new QRCode(document.getElementById("qrcode"), {
-        text: `${baseUrl}/join?sessionId=${sessionId}`,
+        text: qrLink,
         width: 250,
         height: 250,
       });
