@@ -12,7 +12,7 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css"
     />
-    
+
     <style>
       .hidden {
         display: none;
@@ -28,7 +28,6 @@
       }
       .navbar-item:hover {
         background-color: #4258ff !important; /* Change the background color on hover */
-        color: #000000 !important; /* Change the text color on hover */
       }
       :root {
         --body-bg: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
@@ -185,14 +184,80 @@
       .msg-body-class {
         height: 100vh;
       }
+      .nav-item-hover:hover {
+        -webkit-text-stroke-width: 0.15px;
+        -webkit-text-stroke-color: rgb(255, 255, 255);
+      }
+      .info-button {
+        position: relative;
+        display: inline-block;
+        cursor: pointer;
+      }
+
+      .info-tooltip {
+        display: none;
+        position: absolute;
+        top: 50%;
+        right: 100%;
+        transform: translateY(-50%);
+        margin-right: 8px;
+        padding: 8px;
+        background-color: #333;
+        color: #fff;
+        border-radius: 4px;
+        font-size: 14px;
+        white-space: nowrap;
+        z-index: 10;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      .info-button:hover .info-tooltip {
+        display: block;
+        opacity: 1;
+      }
+
+      .info-tooltip::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 100%;
+        transform: translateY(-50%);
+        border-width: 6px;
+        border-style: solid;
+        border-color: transparent transparent transparent #333;
+      }
     </style>
   </head>
   <body>
     <!-- Nav Bar -->
     <nav class="navbar is-transparent is-link">
       <div class="navbar-brand">
+        <a class="navbar-item" href="/">
+          <h1 class="nav-item-hover">
+            <i class="fa-solid fa-qrcode"></i> Talk
+          </h1>
+        </a>
+      </div>
+      <div
+        style="
+          position: fixed;
+          top: 0;
+          right: 0;
+          padding: 10px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        "
+      >
         <a class="navbar-item">
-          <h1><i class="fa-solid fa-qrcode"></i> Talk</h1>
+          <span class="nav-item-hover"
+            ><div class="info-button">
+              <div class="info-tooltip">
+                <span style="font-size: smaller;">Trouble connecting? Refresh the QR code.</span>
+              </div>
+              <i class="fa-solid fa-circle-info"></i></div
+          ></span>
         </a>
       </div>
     </nav>
@@ -264,9 +329,10 @@
           <div class="msger messageTools">
             <header class="msger-header">
               <div class="msger-header-title">
-                <span style="font-size: smaller;">💬</span> Live Chat
+                <span style="font-size: smaller">💬</span> Live Chat
                 <a href="https://codepen.io/sajadhsm/pen/odaBdd" target="_blank"
-                  ><span style="font-size:xx-small;">[Component inspired by]
+                  ><span style="font-size: xx-small"
+                    >[Component inspired by]
                   </span></a
                 >
               </div>
@@ -319,8 +385,11 @@
     let sessionId = "";
     let socket = null;
 
-    const HOST_IMG = "./img/man.png";
-    const PERSON_IMG = "./img/man_person.png";
+    // Get the current base URL
+    const baseUrl = window.location.origin;
+
+    const HOST_IMG = "./img/man_person.png";
+    const PERSON_IMG = "./img/man.png";
 
     function hiddenMsgToolsElements() {
       let elements = document.getElementsByClassName("messageTools");
@@ -340,7 +409,7 @@
     // Function to generate the QR code
     function generateQRCode() {
       new QRCode(document.getElementById("qrcode"), {
-        text: `https://fb25-2401-4900-49a8-765a-cdcb-ddda-2f22-1edd.ngrok-free.app/join?sessionId=${sessionId}`,
+        text: `${baseUrl}/join?sessionId=${sessionId}`,
         width: 250,
         height: 250,
       });
@@ -382,7 +451,7 @@
       });
 
       socket.on("message", (message) => {
-        appendMessage("Client", PERSON_IMG, "left", message);
+        appendMessage("Guest", PERSON_IMG, "left", message);
       });
 
       socket.on("notify-client-disconnect", (message) => {
@@ -400,7 +469,7 @@
                     font-style: italic;
                   "
                 >
-                  Client Disconnected
+                  Guest Disconnected
                 </p></div>
       `;
 

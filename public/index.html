@@ -26,7 +26,10 @@
     <style>
       .navbar-item:hover {
         background-color: #4258ff !important; /* Change the background color on hover */
-        color: #000000 !important; /* Change the text color on hover */
+      }
+      .nav-item-hover:hover {
+        -webkit-text-stroke-width: 0.15px;
+        -webkit-text-stroke-color: rgb(255, 255, 255);
       }
       .footer {
         padding: 1rem 2rem;
@@ -63,7 +66,9 @@
     <nav class="navbar is-transparent is-link">
       <div class="navbar-brand">
         <a class="navbar-item">
-          <h1><i class="fa-solid fa-qrcode"></i> Talk</h1>
+          <h1 class="nav-item-hover">
+            <i class="fa-solid fa-qrcode"></i> Talk
+          </h1>
         </a>
         <div
           class="navbar-burger js-burger"
@@ -79,10 +84,10 @@
         <div class="navbar-end">
           <div class="navbar-item">
             <a class="navbar-item" href="#about">
-              <span>About</span>
+              <span class="nav-item-hover">About</span>
             </a>
             <a class="navbar-item" href="#faq">
-              <span>FAQs</span>
+              <span class="nav-item-hover">FAQs</span>
             </a>
             <div class="field is-grouped">
               <p class="control">
@@ -101,6 +106,7 @@
         </div>
       </div>
     </nav>
+    
     <!-- Section -->
     <section class="section" style="background-color: #4258ff">
       <div class="has-text-centered">
@@ -108,7 +114,7 @@
           class="title"
           style="
             font-family: 'Zen Tokyo Zoo', system-ui;
-            font-weight: 400;
+            font-weight: 500;
             font-style: normal;
             font-size: 70px;
             color: white;
@@ -116,7 +122,7 @@
             letter-spacing: 5px;
           "
         >
-          <span>QrTalk</span>
+          <span>QrTalk </span>
         </p>
       </div>
       <!-- Slogan -->
@@ -176,7 +182,7 @@
                     fill="currentColor"
                   />
                 </svg>
-                <h1 class="title" style="margin-top: 20px">Host</h1>
+                <h1 class="title is-2" style="margin-top: 20px">Host</h1>
               </div>
             </div>
           </a>
@@ -201,7 +207,7 @@
                     fill="currentColor"
                   />
                 </svg>
-                <h1 class="title" style="margin-top: 20px">Join</h1>
+                <h1 class="title is-2" style="margin-top: 20px">Join</h1>
               </div>
             </div>
           </a>
@@ -218,10 +224,10 @@
                 style="
                   font-family: Cambria, Cochin, Georgia, Times,
                     'Times New Roman', serif;
-                  font-size: 1em;
+                  font-size: 0.7em;
                   color: white;
-                  font-weight: 400;
-                  opacity: 0.5;
+                  font-weight: 100;
+                  opacity: 0.7;
                 "
               >
                 About
