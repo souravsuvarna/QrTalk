@@ -29,8 +29,8 @@ app.get("/create-session", (req, res) => {
   res.json({ sessionId });
 });
 
-app.get('/ping', (req, res) => {
-  res.status(200).send('pong');
+app.get("/ping", (req, res) => {
+  res.status(200).send("pong");
 });
 
 io.on("connection", (socket) => {
@@ -86,18 +86,18 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
-    session.clients = session.clients.filter((client) => client !== socket);
-    if (session.clients.length === 0) {
-      delete sessions[sessionId];
-    }
-    console.log("Disconnection Succesful");
+    // Clear all clients from the session
+    session.clients = [];
+    // Delete the session itself
+    delete sessions[sessionId];
+    console.log("Disconnection and Session Deletion Successful");
   });
 
-  socket.on("host-disconnect",(message)=>{
+  socket.on("host-disconnect", (message) => {
     socket.broadcast.emit("notify-host-disconnect", message);
   });
 
-  socket.on("client-disconnect",(message)=>{
+  socket.on("client-disconnect", (message) => {
     socket.broadcast.emit("notify-client-disconnect", message);
   });
 });
